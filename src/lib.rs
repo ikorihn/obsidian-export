@@ -423,8 +423,12 @@ impl<'a> Exporter<'a> {
                 .write_all(frontmatter_str.as_bytes())
                 .context(WriteSnafu { path: &dest })?;
         }
+
+        let mut content = render_mdevents_to_mdtext(markdown_events);
+        content = content.replace("{{\\<", "{{<");
+
         outfile
-            .write_all(render_mdevents_to_mdtext(markdown_events).as_bytes())
+            .write_all(content.as_bytes())
             .context(WriteSnafu { path: &dest })?;
         Ok(())
     }
